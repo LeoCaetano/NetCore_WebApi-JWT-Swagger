@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NetCore_WebApi_JWT_Swagger.Entidades;
 using NetCore_WebApi_JWT_Swagger.Repositorios;
+using NetCore_WebApi_JWT_Swagger.Servicos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +30,7 @@ namespace NetCore_WebApi_JWT_Swagger.Controllers
         /// <response code="200">Lista dos Produtos</response>   
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<Produto>> GetAll()
         {
             List<Produto> produtos = _repositorio.GetProdutos();
@@ -45,6 +48,7 @@ namespace NetCore_WebApi_JWT_Swagger.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
         public ActionResult<Produto> Get(int id)
         {
             Produto produto = _repositorio.GetProduto(id);
@@ -76,6 +80,7 @@ namespace NetCore_WebApi_JWT_Swagger.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "gerente")]
         public ActionResult<Produto> Add([FromBody]Produto produto)
         {
             _repositorio.AddProduto(produto);
@@ -104,6 +109,7 @@ namespace NetCore_WebApi_JWT_Swagger.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
         public ActionResult<Produto> Update([FromBody] Produto produto)
         {
             Produto retorno = _repositorio.UpdateProduto(produto);
